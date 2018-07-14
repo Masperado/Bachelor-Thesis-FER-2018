@@ -1,0 +1,82 @@
+---
+title: "Cleaning data"
+author: "Josip Torić"
+date: "April 19, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(data.table)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+religion <- fread("finalNew.csv",header=T,fill=T,colClasses = list(character=1:20))
+debateReligion <- fread("debatereligion.csv",header=T,fill=T,colClasses = list(character=1:20))
+```
+
+```{r}
+summary(religion)
+sample_n(religion,10)
+```
+
+```{r}
+religion$score <- as.numeric(religion$score)
+
+religion %>% filter(body!="" & body!="false" & body!="true") %>% filter(!is.na(score)) %>% select(body,author,score,subreddit)-> religion_filtered
+
+summary(religion_filtered)
+
+```
+
+```{r}
+
+debateReligion %>% distinct(author,.keep_all = TRUE) %>% select(author,author_flair_text) -> debateFlairs
+
+inner_join(religion_filtered,debateFlairs) -> finalData
+
+finalData %>% group_by(author_flair_text) %>% summarise(broj=n()) -> listOfFlairs
+
+
+
+```
+
+```{r}
+listOfFlairs$author_flair_text <- tolower(listOfFlairs$author_flair_text)
+
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$author_flair_text,"ex-"),"ex-",listOfFlairs$author_flair_text)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"atheist"),"secular",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"gnostic"),"secular",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"secular"),"secular",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"anti"),"secular",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"nihilist"),"secular",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"christian"),"christian",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"catholic"),"christian",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"protestant"),"christian",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"eastern"),"christian",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"muslim"),"muslim",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"jew"),"jew",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"buddhist"),"buddhist",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"hindu"),"hindu",listOfFlairs$cleaned)
+listOfFlairs$cleaned <- ifelse(str_detect(listOfFlairs$cleaned,"ex-|secular|christian|muslim|jew|buddhist|hindu"),listOfFlairs$cleaned,"other")
+
+
+```
+
+```{r}
+inner_join(finalData,listOfFlairs) %>% select(-author_flair_text,-broj) %>% distinct(body,author,score,subreddit,cleaned,.keep_all = TRUE) -> finalFlair
+
+finalFlair$cleaned <- as.factor(finalFlair$cleaned)
+
+finalFlair %>% group_by(cleaned) %>% summarise(broj=n()) -> cleanedListOfFlairs
+
+
+summary(finalFlair)
+summary(cleanedListOfFlairs)
+```
+
+```{r}
+fwrite(finalFlair,"finalData.csv")
+```
+

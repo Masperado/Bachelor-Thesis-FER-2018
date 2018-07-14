@@ -1,0 +1,5 @@
+Computational Statistical Analysis of the Language of Religious Discussions on Internet Forums
+
+Analysis of religion questions is always very controversial. Religion is something personal for every person, and to objectively consider religion is a very demanding thing. The aim of the thesis was to analyze the texts of religious discussions through statistical data analysis. The data set used in this work was downloaded from the Reddit social network. We built the model using word frequencies and LIWC features. We tested two machine learning models, logistic regression and the support vectors machine for predicting religion. We have achieved satisfactory results and with an accuracy of approximately 65% predict the user's religion based on his or her comments.
+
+natural language processing, machine learning, Reddit, logistic regression, support vector machine, LIWC, statistical data analysis

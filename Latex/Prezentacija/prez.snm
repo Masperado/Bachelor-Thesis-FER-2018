@@ -1,0 +1,16 @@
+\beamer@slide {fig:meanmedmode}{5}
+\beamer@slide {fig:deviation}{7}
+\beamer@slide {fig:eda}{10}
+\beamer@slide {logiFun}{13}
+\beamer@slide {logiZ}{13}
+\beamer@slide {fig:logistic}{14}
+\beamer@slide {fig:logistic}{16}
+\beamer@slide {table:dist}{21}
+\beamer@slide {table:desc}{23}
+\beamer@slide {table:voc}{24}
+\beamer@slide {table:liwc}{25}
+\beamer@slide {table:inf}{26}
+\beamer@slide {table:logTrain}{27}
+\beamer@slide {table:logTest}{27}
+\beamer@slide {table:svmTrain}{28}
+\beamer@slide {table:svmTest}{28}

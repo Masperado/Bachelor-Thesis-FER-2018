@@ -1,0 +1,5 @@
+Računalna statistička analiza jezika religijskih rasprava na internetskim forumima
+
+Analiza religijskih pitanja je uvijek vrlo kontroverzna. Religija kod svakog čovjeka predstavlja nešto osobno, a objektivno sagledati religiju je vrlo zahtjevna stvar. Cilj rada je bio analizirati tekstove religijskih rasprava uz pomoć statističke analize. Skup podataka korišten u radu smo preuzeli s društvene mreže Reddit. Model smo izgradili koristeći frekvencije riječi i značajke LIWC. Isprobali smo dva modela strojnog učenja, logističku regresiju i stroj potpornih vektora za predviđanje religije. Ostvarili smo rezultate koji su zadovoljavajući te s točnošću od otprilike 65% predviđaju religiju korisnika na temelju njegovih ili njezinih komentara.
+
+obrada prirodnog jezika, strojno učenje, Reddit, logistička regresija, stroj potpornih vektora, LIWC, statistička analiza podatka

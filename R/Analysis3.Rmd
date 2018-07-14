@@ -1,0 +1,203 @@
+---
+title: "LIWC"
+author: "Josip Torić"
+date: '5 lipnja 2018 '
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(data.table)
+library(stringr)
+library(MASS)
+library(nnet)
+library(e1071)
+
+```
+
+
+```{r}
+comments <- fread("commentsByAuthor.csv",header=T)
+liwc1 <- fread("religion/liwc1clean.csv",header=T)
+liwc2 <- fread("religion/liwc2clean.csv",header=T)
+liwc3 <- fread("religion/liwc3clean.csv",header=T)
+liwc4 <- fread("religion/liwc4clean.csv",header=T)
+liwc5 <- fread("religion/liwc5clean.csv",header=T)
+liwc6 <- fread("religion/liwc6clean.csv",header=T)
+liwc7 <- fread("religion/liwc7clean.csv",header=T)
+
+liwc <- rbind(liwc1,liwc2,liwc3,liwc4,liwc5,liwc6,liwc7)
+
+comments$lengthOfComment <- str_count(comments$Body_Of_Comments,"\\w+")
+
+for (i in names(comments)[5:704]) comments[[i]] <- comments[[i]]/comments$lengthOfComment
+
+inner_join(comments,liwc,by=c("Author_Of_Comments"="LIWC_Source (A)")) -> joined
+
+joined %>% select(-Author_Of_Comments,-Body_Of_Comments,-Sum_Of_Scores,-lengthOfComment) -> finalStudyDataset
+
+fwrite(finalStudyDataset,"finalStudyDataset.csv")
+
+head(finalStudyDataset)
+
+```
+
+```{r}
+
+finalStudyDataset <- fread("finalStudyDataset.csv",header=T)
+
+finalStudyDataset %>% group_by(Religion_Of_Author) %>% summarise_all(funs(mean)) -> data
+
+finalStudyDataset$Religion_Of_Author <- as.factor(finalStudyDataset$Religion_Of_Author)
+
+head(finalStudyDataset)
+
+data$Religion_Of_Author
+head(data2)
+co.var <- function(x,na.rm=TRUE) 100*(sd(x,na.rm=na.rm)/mean(x,na.rm=na.rm))
+
+data2 <- rbind(data2, apply(data2,2,co.var))
+head(data2)
+
+```
+
+
+
+Iz chi squared nema ništa!
+```{r}
+
+data %>% dplyr::select(names(data)[702:793]) -> data2
+
+data2$row_sums <- rowSums(data2)
+
+data2 <- rbind(data2,colSums(data2))
+
+head(data2,9)
+
+chiSquareValue <- 0
+for (i in names(data2)[1:92]){
+  for (j in seq(1,8,1)){
+    expectation <- data2$row_sums[j]*data2[[i]][8]/data2$row_sums[8]
+    chiSquareValue <- chiSquareValue+((data2[[i]][j])-expectation)**2/expectation
+  }
+}
+
+pValue <- 1-pchisq(chiSquareValue,7*91)
+
+pValue
+```
+
+
+Iz Anove vidimo da podaci odstupaju!
+```{r}
+cbind()
+
+finalStudyDataset %>% dplyr::select(-Religion_Of_Author) -> manovaColumns
+cbind(manovaColumns)
+
+aov1 <- aov(LIWC_swear~Religion_Of_Author,data=finalStudyDataset)
+summary(aov1)
+
+fit <- manova(cbind(LIWC_OtherP,LIWC_Parenth,LIWC_Analytic) ~ Religion_Of_Author,data=finalStudyDataset)
+
+summary(fit)
+
+data$Religion_Of_Author
+data$muslim
+```
+
+Logistic
+glm
+binomial family
+
+```{r}
+require(bootstrap)
+
+set.seed(1)
+
+bootstrapinterval <- function(podaci, alfa, f, N){
+  r = bootstrap(podaci, N, f)
+  result <- list(lb=quantile(r$thetastar,alfa),ub=quantile(r$thetastar,1-alfa),dist=r$thetastar)
+  result
+  
+}
+
+finalStudyDatasetShuffled <- finalStudyDataset[sample(nrow(finalStudyDataset)),]
+finalStudyDatasetShuffled %>% dplyr::select(names(finalStudyDatasetShuffled)[702:793]) -> finalStudyDatasetShuffled
+finalStudyDatasetShuffled$Religion_Of_Author <- finalStudyDataset$Religion_Of_Author
+
+finalStudyDatasetShuffled <- finalStudyDataset
+
+finalStudyDatasetShuffled %>% dplyr::select(names(data)[702:793]) -> glmData
+glmData$Religion_Of_Author <- finalStudyDatasetShuffled$Religion_Of_Author
+
+svm_pred <- glmData[1:3000,]
+svm_test <- glmData[3001:3733,]
+
+
+
+logModel <- multinom(Religion_Of_Author ~ ., data=svm_pred)
+
+predLog <- predict(logModel,svm_pred)
+
+svm_pred %>% dplyr::select(Religion_Of_Author) -> resultsLog
+resultsLog$predLog <- predLog
+resultsLog$predMajor <- "secular"
+
+errorLog <- resultsLog$Religion_Of_Author==resultsLog$predLog
+errorMajor <- resultsLog$Religion_Of_Author==resultsLog$predMajor
+
+summary(errorLog)
+summary(errorMajor)
+
+logBootstrap = bootstrapinterval(errorLog,0.05,mean,3000)
+majorBootstrap = bootstrapinterval(errorMajor,0.05,mean,3000)
+logBootstrap$lb
+logBootstrap$ub
+majorBootstrap$lb
+majorBootstrap$ub
+
+t.test(logBootstrap$dist,mu=0.5968)
+```
+
+
+Iz SVM-a ima
+```{r}
+set.seed(1)
+
+finalStudyDatasetShuffled <- finalStudyDataset[sample(nrow(finalStudyDataset)),]
+finalStudyDatasetShuffled %>% dplyr::select(names(finalStudyDatasetShuffled)[702:793]) -> finalStudyDatasetShuffled
+finalStudyDatasetShuffled$Religion_Of_Author <- finalStudyDataset$Religion_Of_Author
+
+finalStudyDatasetShuffled <- finalStudyDataset
+
+finalStudyDatasetShuffled %>% dplyr::select(names(data)[702:793]) -> glmData
+glmData$Religion_Of_Author <- finalStudyDatasetShuffled$Religion_Of_Author
+
+svm_pred <- glmData[1:3000,]
+svm_test <- glmData[3001:3733,]
+
+svmModel <- svm(Religion_Of_Author ~ ., data=svm_pred)
+
+predSvm <- predict(svmModel,svm_pred)
+
+svm_pred %>% dplyr::select(Religion_Of_Author) -> resultsSvm
+resultsSvm$predSvm <- predSvm
+resultsSvm$predMajor <- "secular"
+
+errorSvm <- resultsSvm$Religion_Of_Author==resultsSvm$predSvm
+errorMajor <- resultsSvm$Religion_Of_Author==resultsSvm$predMajor
+
+summary(errorSvm)
+summary(errorMajor)
+
+svmBootstrap = bootstrapinterval(errorSvm,0.05,mean,3000)
+majorBootstrap = bootstrapinterval(errorMajor,0.05,mean,3000)
+svmBootstrap$lb
+svmBootstrap$ub
+majorBootstrap$lb
+majorBootstrap$ub
+
+t.test(svmBootstrap$dist,mu=0.5968)
+```

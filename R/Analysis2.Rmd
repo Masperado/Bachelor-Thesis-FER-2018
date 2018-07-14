@@ -1,0 +1,178 @@
+---
+title: "Analysis"
+author: "Josip Torić"
+date: "May 20, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(data.table)
+library(stringr)
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r}
+dataset <- fread("finalData.csv",header=T)
+names(dataset)[5]<-"religion"
+myStopwords <- fread("stopwords.txt")
+myStopwords <- myStopwords$stopwords
+"%ni%" = Negate( "%in%" )
+removeWords <- function(str, stopwords) {
+  x <- unlist(strsplit(str, " "))
+  paste(x[!x %in% stopwords], collapse = " ")
+}
+
+```
+
+
+```{r}
+
+
+dataset$numberOfWords <- lengths(strsplit(dataset$body,"\\W+"))
+dataset$numberOfChars <- nchar(dataset$body)
+dataset$averageWordLength <- dataset$numberOfChars/dataset$numberOfWords
+
+dataset %>% group_by(religion) %>% summarise(numberOfWordsMean = mean(numberOfWords)) -> statistics
+dataset %>% group_by(religion) %>% summarise(numberOfComments = n()) %>% dplyr::select(religion,numberOfComments) -> statistics
+dataset %>% group_by(religion) %>% summarise(averageWordLength = mean(averageWordLength)) %>% select(averageWordLength) -> statistics$averageWordLength
+
+
+
+```
+
+```{r}
+
+dataset %>% filter(religion == "secular") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> secularWordFreq
+
+dataset %>% filter(religion == "other") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> otherWordFreq
+
+dataset %>% filter(religion == "christian") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> christianWordFreq
+
+dataset %>% filter(religion == "muslim") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> muslimWordFreq
+
+dataset %>% filter(religion == "jew") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> jewWordFreq
+
+dataset %>% filter(religion == "buddhist") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> buddhistWordFreq
+
+dataset %>% filter(religion == "hindu") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> hinduWordFreq
+
+dataset %>% filter(religion == "ex-") %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> exWordFreq
+
+dataset  %>% select(body) %>% apply(2,paste,collapse="") %>% tolower %>% strsplit("\\W+") %>% unlist-> words
+words <- stringi::stri_trans_general(words, "latin-ascii")
+words <- words[!words %in% myStopwords]
+words %>% table %>% sort(decreasing=T) %>% as.data.frame -> allWordFreq
+
+```
+
+```{r}
+names(secularWordFreq)[1] <- "word"
+names(secularWordFreq)[2] <- "occurences"
+
+png(filename="secularWordFreq.png",width=1000,height=1000)
+secularWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+names(otherWordFreq)[1] <- "word"
+names(otherWordFreq)[2] <- "occurences"
+
+png(filename="otherWordFreq.png",width=1000,height=1000)
+otherWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+names(christianWordFreq)[1] <- "word"
+names(christianWordFreq)[2] <- "occurences"
+
+png(filename="christianWordFreq.png",width=1000,height=1000)
+christianWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+names(muslimWordFreq)[1] <- "word"
+names(muslimWordFreq)[2] <- "occurences"
+
+png(filename="muslimWordFreq.png",width=1000,height=1000)
+muslimWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+names(jewWordFreq)[1] <- "word"
+names(jewWordFreq)[2] <- "occurences"
+
+png(filename="jewWordFreq.png",width=1000,height=1000)
+jewWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+names(buddhistWordFreq)[1] <- "word"
+names(buddhistWordFreq)[2] <- "occurences"
+
+png(filename="buddhistWordFreq.png",width=1000,height=1000)
+buddhistWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+names(hinduWordFreq)[1] <- "word"
+names(hinduWordFreq)[2] <- "occurences"
+
+png(filename="hinduFreq.png",width=1000,height=1000)
+hinduWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+
+names(exWordFreq)[1] <- "word"
+names(exWordFreq)[2] <- "occurences"
+
+png(filename="exWordFreq.png",width=1000,height=1000)
+exWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+
+names(allWordFreq)[1] <- "word"
+names(allWordFreq)[2] <- "occurences"
+
+png(filename="allWordFreq.png",width=1000,height=1000)
+allWordFreq %>% head(20) %>% ggplot(aes(x = word, y=occurences)) + geom_bar(stat="identity")
+dev.off()
+```
+
+
+
+Ajmo složiti komentare prema autoru
+
+```{r}
+
+dataset %>% group_by(author) %>% summarise(body=paste(tolower(body),collapse=" "),score=sum(score),religion=first(religion)) -> commentsByAuthor
+
+commentsByAuthor %>% filter(nchar(body)>1000) -> commentsByAuthor
+
+head(commentsByAuthor)
+names(commentsByAuthor) <- c("Author_Of_Comments","Body_Of_Comments","Sum_Of_Scores","Religion_Of_Author")
+
+
+allWordFreq %>% distinct(word) %>% head(700) -> commonWords
+commonWords <- as.character(commonWords$.)
+
+commentsByAuthor["people"] <- str_count(commentsByAuthor$Body_Of_Comments,"people")
+
+for (word in commonWords) commentsByAuthor[word] <- str_count(commentsByAuthor$Body_Of_Comments,word)
+
+
+fwrite(commentsByAuthor,"commentsByAuthor.csv")
+```
+
+

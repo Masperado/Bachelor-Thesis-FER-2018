@@ -1,0 +1,29 @@
+\select@language {croatian}
+\contentsline {chapter}{\numberline {1}Uvod}{1}
+\contentsline {chapter}{\numberline {2}Statisti\IeC {\v c}ka analiza jezika}{3}
+\contentsline {section}{\numberline {2.1}Deskriptivna statisti\IeC {\v c}ka analiza}{3}
+\contentsline {subsection}{\numberline {2.1.1}Mjere centralne tendencije}{3}
+\contentsline {subsection}{\numberline {2.1.2}Mjere rasipanja}{4}
+\contentsline {section}{\numberline {2.2}Inferencijalna statisti\IeC {\v c}ka analiza}{7}
+\contentsline {section}{\numberline {2.3}Eksplorativna statisti\IeC {\v c}ka analiza}{8}
+\contentsline {section}{\numberline {2.4}Zna\IeC {\v c}ajke LIWC}{9}
+\contentsline {section}{\numberline {2.5}Strojno u\IeC {\v c}enje}{11}
+\contentsline {subsection}{\numberline {2.5.1}Op\IeC {\'c}enito o strojnom u\IeC {\v c}enju}{11}
+\contentsline {subsection}{\numberline {2.5.2}Logisti\IeC {\v c}ka regresija}{11}
+\contentsline {subsection}{\numberline {2.5.3}Stroj potpornih vektora}{13}
+\contentsline {section}{\numberline {2.6}Relevantni radovi}{14}
+\contentsline {chapter}{\numberline {3}Podaci}{15}
+\contentsline {section}{\numberline {3.1}Prikupljanje podataka}{15}
+\contentsline {section}{\numberline {3.2}Obrada podataka}{16}
+\contentsline {section}{\numberline {3.3}Model podataka}{17}
+\contentsline {subsection}{\numberline {3.3.1}Frekvencije rije\IeC {\v c}i}{17}
+\contentsline {subsection}{\numberline {3.3.2}Zna\IeC {\v c}ajke LIWC}{18}
+\contentsline {chapter}{\numberline {4}Rezultati}{19}
+\contentsline {section}{\numberline {4.1}Razlike u deskriptivnoj analizi}{19}
+\contentsline {section}{\numberline {4.2}Razlike u vokabularu}{20}
+\contentsline {section}{\numberline {4.3}Razlike u zna\IeC {\v c}ajkama LIWC}{21}
+\contentsline {section}{\numberline {4.4}Zaklju\IeC {\v c}ci inferencijalne analize}{23}
+\contentsline {section}{\numberline {4.5}Predikcije logisti\IeC {\v c}ke regresije}{24}
+\contentsline {section}{\numberline {4.6}Predikcije stroja potpornih vektora}{25}
+\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{26}
+\contentsline {chapter}{Literatura}{27}

@@ -1,0 +1,58 @@
+\begin{thebibliography}{9}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Alpaydin(2010)]{machine}
+Ethem Alpaydin.
+\newblock \emph{Introduction to Machine Learning}.
+\newblock 2010.
+
+\bibitem[Darquennes i Vandenbussche(2011)]{darquen}
+Jeroen Darquennes i Wim Vandenbussche.
+\newblock Language and religion as a sociolinguistic field of study: some
+  introductory notes.
+\newblock 25:\penalty0 1--11, 01 2011.
+
+\bibitem[Diez et~al.(2015)Diez, Barr, i Cetinkaya-Rundel]{openintro}
+M.~David Diez, D.~Christopher Barr, i Mine Cetinkaya-Rundel.
+\newblock \emph{OpenIntro Statistics}.
+\newblock 2015.
+
+\bibitem[Efron(1979)]{bootstrap}
+B.~Efron.
+\newblock Bootstrap methods: Another look at the jackknife.
+\newblock \emph{Ann. Statist.}, 7\penalty0 (1):\penalty0 1--26, 01 1979.
+\newblock \doi{10.1214/aos/1176344552}.
+\newblock URL \url{https://doi.org/10.1214/aos/1176344552}.
+
+\bibitem[Lemshow i Hosmer(2000)]{regression}
+Stanley Lemshow i W.~David Hosmer.
+\newblock \emph{Applied Logistic Regression}.
+\newblock A Wiley Interscience Publication, 2000.
+
+\bibitem[Pennebaker et~al.(2015)Pennebaker, Body, Jordan, i Blackburn]{liwc}
+W.~James Pennebaker, L.~Ryan Body, Kayla Jordan, i Kate Blackburn.
+\newblock The development and psychometric properties of liwc2015.
+\newblock 2015.
+\newblock \doi{10.15781/T29G6Z}.
+
+\bibitem[Rahimi(2011)]{rahimi}
+Ali Rahimi.
+\newblock Language and religion; linguistic religion or religious language.
+\newblock 06 2011.
+
+\bibitem[Thorsten(2002)]{learnsvm}
+Joachims Thorsten.
+\newblock \emph{Learning to classify text using support vector machines:
+  Methods, theory and algorithms}.
+\newblock Kluwer Academic Publishers, 2002.
+
+\bibitem[Tukey(1977)]{tukey}
+John Tukey.
+\newblock Exploratory data analysis.
+\newblock 1977.
+
+\end{thebibliography}
